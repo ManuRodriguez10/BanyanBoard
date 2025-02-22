@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Banyan Board</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const scrollTopButton = document.querySelector(".scroll-top");
+    
+            // Show/hide button when scrolling (for better UX)
+            window.addEventListener("scroll", function () {
+                if (window.scrollY > 300) {
+                    scrollTopButton.style.display = "flex"; // Show button
+                } else {
+                    scrollTopButton.style.display = "none"; // Hide button
+                }
+            });
+    
+            // Scroll smoothly to top when clicked
+            scrollTopButton.addEventListener("click", function (event) {
+                event.preventDefault();
+                window.scrollTo({ top: 0, behavior: "smooth" });
+            });
+        });
+    </script>    
+    <body>
+        <!-- Add Hamburger Menu -->
+<div class="menu-toggle">&#9776;</div>
+
+        <div class="banner">
+            <div class="navbar">
+                <img src="banyanlogo.jpg" class="logo">
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="schedules.html">Campus Schedules</a></li>
+                    <li><a href="#">My Class Schedule</a></li>
+                    <li><a href="#">Time Tracker</a></li>
+                </ul>
+            </div>
+            <div class="content">
+                <h1>Welcome to the Banyan Board</h1>
+                <p>Your official NCF web app where you can stay on top of your assignments, 
+                   <br> view your class schedule and keep up with school events. 
+                </p>
+                <div class="buttons">
+                    <button class="button"><a href="#about" class="scroll-link">About Banyan Board</a></button>
+                    <button class="button"><a href="#features" class="scroll-link">Banyan Board Features</a></button>
+                </div>
+            </div>
+        </div> 
+
+        <!-- About Section -->
+<section id="about" class="about">
+    <div class="about-content">
+        <h2>About Banyan Board</h2>
+        <p>Banyan Board is your official NCF web app, designed to help you stay organized and manage your academic responsibilities with ease. With this platform, you can keep track of your assignments, view your class schedule, and stay updated on important school events. 
+            Whether you need to plan your coursework, set reminders for deadlines, or stay informed about campus activities, Banyan Board provides a centralized hub to streamline your student experience. Its user-friendly interface ensures that all essential tools are easily accessible, 
+            allowing you to focus on what truly matters—your education and personal growth.
+        </p>
+        
+        <!-- Scroll to Top Button (ONLY inside About Section) -->
+        <a href="#" class="scroll-top">
+            <img src="up-arrow.png" alt="Scroll to Top">
+        </a>
+    </div>
+</section>
+ <!-- Features Section -->
+<div class="container">
+    <div class="features-title">
+        <h1>Banyan Board Features</h1>
+    </div>
+
+    <div class="features-grid">
+        <!-- To-Do List (Moves Left) -->
+        <div class="feature todo">
+            <div class="card">
+                <i class="fa-brands fa-layer-group"></i>
+                <h2>To-Do List</h2>
+                <p>Stay organized by adding, tracking, and managing homework assignments, project deadlines, and personal study goals. Easily check off completed tasks and prioritize upcoming work, ensuring you never miss an important due date.</p>
+            </div>
+        </div>
+    
+        <!-- Schedule-->
+        <div class="feature schedule">
+            <div class="card">
+                <i class="fa-brands fa-chromecast"></i>
+                <h2>My Schedule</h2>
+                <p>Customize your own academic calendar by creating a personalized class schedule, tracking important dates, and staying on top of deadlines. View essential campus schedules, including HAM , library hours, and Student Success Center availability, ensuring you always have access to the resources you need.</p>
+            </div>
+        </div>
+    
+        <!-- Time Tracker -->
+        <div class="feature time-tracker">
+            <div class="card">
+                <i class="fa-brands fa-user-group"></i>
+                <h2>Time Tracker</h2>
+                <p>Monitor your study habits with a built-in stopwatch that helps you track the time spent on each class or activity. Calculate and analyze your time usage to improve productivity and ensure efficient study sessions.</p>
+
+            </div>
+        </div>
+    </div>
+</div> 
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const menuToggle = document.querySelector(".menu-toggle");
+        const navbar = document.querySelector(".navbar");
+
+        menuToggle.addEventListener("click", function () {
+            navbar.classList.toggle("active"); // Toggle visibility
+        });
+    });
+</script>
+</body>
+</html>
