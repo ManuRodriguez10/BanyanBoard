@@ -1,0 +1,329 @@
+:root {
+    --dark: #001747;
+    --grey: #b1bacb;
+    --grey-border: rgba(210, 210, 210, 0.75);
+    --grey-light: #eeeeee;
+    --grey-dark: $405175;
+    --blue: #0f2553;
+    --green: #49c689;
+    --white: #ffffff;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+    box-sizing: border-box;
+}
+
+html, body {
+    overflow-x: hidden;
+    width: 100vw;
+    height: 100vh;
+    scroll-behavior: smooth;
+}
+
+  body {
+    background: linear-gradient(to bottom, black, var(--blue));
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    overflow-x: hidden;
+  }
+
+  /* Navbar */
+.navbar {
+    width: 85%;
+    margin: auto;
+    padding: 35px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+} 
+.logo {
+    width: 120px;
+    cursor: pointer;
+}
+.navbar ul {
+    display: flex;
+}
+.navbar ul li {
+    list-style: none;
+    margin: 0 20px;
+    position: relative;
+}
+.navbar ul li a {
+    text-decoration: none;
+    color: white;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+.navbar ul li::after {
+    content: "";
+    height: 3px;
+    width: 0%;
+    background: #ffd700;
+    position: absolute;
+    left: 0;
+    bottom: -5px;
+    transition: width 0.3s;
+}
+.navbar ul li:hover::after {
+    width: 100%;
+}
+  
+  .btn {
+    color: var(--white);
+    font-size: 1.1rem;
+    padding: 0.7rem 1.5rem;
+    border-radius: 0.3rem;
+    background-color: #ffd700;
+    border: none;
+    position: absolute;
+    right: 0.5rem;
+    bottom: 0.5rem;
+  }
+  
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p {
+    margin: 0;
+  }
+  
+  /* Todo Container */
+  
+  .todo {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    border-radius: 2rem;
+    background: var(--white);
+    padding: 3rem;
+    height: 70%;
+    width: 60%;
+    box-shadow: 0 1rem 3rem 1rem rgba(0, 23, 71, 0.15);
+    max-width: 30rem;
+    margin-top: 150px;
+  }
+  
+  h2 {
+    text-transform: uppercase;
+    height: 3rem;
+    color: var(--dark);
+    text-align: center;
+  }
+  
+  .input {
+    position: relative;
+    display: flex;
+  }
+  
+  .input-field {
+    width: 100%;
+    border: 0.06rem solid #d2d2d2bf;
+    border-radius: 0.5rem;
+    padding: 1.25rem;
+    font-size: 1rem;
+  }
+  
+  input[type="text"]::placeholder {
+    color: var(--grey);
+  }
+  
+  .todo-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .todo ul {
+    padding: 0;
+    margin: 0;
+    overflow-y: scroll;
+    overflow-x: auto;
+  }
+  
+  .todo li {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    padding: 1.3rem;
+  }
+  
+  #todoList p {
+    display: flex;
+    gap: 1rem;
+    color: var(--dark);
+    align-items: center;
+  }
+  
+  #todoList .disabled {
+    color: #8f98a8;
+  }
+  
+  .disabled {
+    display: flex;
+    text-decoration: line-through;
+  }
+  
+  input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+  }
+  
+  input[type="checkbox"]::before {
+    content: "\2713";
+    display: inline-block;
+    width: 2rem;
+    height: 2rem;
+    font-size: 1.7rem;
+    text-align: center;
+    border: 0.06rem solid var(--grey-border);
+    border-radius: 50%;
+    color: transparent;
+  }
+  
+  input[type="checkbox"]:checked::before {
+    color: var(--white);
+    background-color: var(--green);
+    border: 0.06rem solid var(--green);
+    border-radius: 50%;
+  }
+
+  .delete-btn {
+    background-color: transparent;
+    border: none;
+    color: red;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-left: 10px;
+    transition: color 0.3s;
+  }
+
+  .delete-btn:hover {
+    color: darkred;
+  }
+  
+  .counter {
+    border: 0.06rem solid var(--grey-light);
+  }
+  
+  .counter-container {
+    height: 2rem;
+    display: flex;
+    justify-content: space-between;
+    color: var(--grey);
+  }
+  
+  .counter-container p {
+    align-self: center;
+  }
+  
+  .counter-container button {
+    border: none;
+    background-color: transparent;
+    color: var(--grey);
+    font-size: 1rem;
+  }
+  
+  .footer {
+    display: flex;
+    gap: 1.8rem;
+    background-color: var(--white);
+    padding: 1.2rem;
+    border-radius: 0.5rem;
+  }
+  
+  .scroll {
+    height: 15rem;
+    scrollbar-width: thin;
+  }
+  
+  .scroll::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .scroll::-webkit-scrollbar-thumb {
+    background-color: var(--blue);
+    border-radius: 0.5rem;
+  }
+  
+  .scroll::-webkit-scrollbar-track {
+    display: none;
+  }
+
+/* Very Small Mobile Screens (Phones under 480px width) */
+/* MOBILE-FRIENDLY NAVBAR */
+@media (max-width: 768px) {
+    .menu-toggle {
+        display: block; /* Show hamburger menu for small screens */
+        font-size: 30px;
+        color: white;
+        cursor: pointer;
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        z-index: 101;
+    }
+}
+
+/* Hide nav links by default on mobile */
+@media (max-width: 768px) {
+    .navbar ul {
+        display: none;
+        flex-direction: column;
+        background: rgba(0, 0, 0, 0.9);
+        width: 100%;
+        position: absolute;
+        top: 70px;
+        left: 0;
+        text-align: center;
+        padding: 10px 0;
+    }
+    .navbar ul li {
+        margin: 10px 0;
+    }
+    .menu-toggle {
+        display: block; /* Show hamburger menu */
+    }
+    .navbar.active ul {
+        display: flex; /* Show nav links when active */
+    }
+
+    /* MAKE BUTTONS SCALABLE FOR MOBILE */
+@media (max-width: 768px) {
+    .btn {
+        color: var(--white);
+        font-size: .7rem;
+        border-radius: 0.2rem;
+        background-color: #ffd700;
+        border: none;
+        position: absolute;
+        right: 0.2rem;
+        bottom: 0.5rem;
+    }
+
+    .input-field {
+        width: 100%;
+        border: 0.06rem solid #d2d2d2bf;
+        border-radius: 0.5rem;
+        padding: 1.25rem;
+        font-size: 0.8rem;
+      }
+    }
+}
