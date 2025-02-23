@@ -15,6 +15,7 @@ public class CalendarActivity {
     public ZonedDateTime getDate() {
         return date;
     }
+
     public String getClientName() {
         return clientName;
     }

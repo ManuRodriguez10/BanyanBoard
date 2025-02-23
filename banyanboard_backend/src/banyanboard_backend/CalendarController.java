@@ -22,121 +22,145 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class CalendarController implements Initializable {
-    // Map to store calendar activities by day of the month
     private Map<Integer, List<CalendarActivity>> calendarActivityMap = new HashMap<>();
 
-    // Current date focus and today's date
-    private ZonedDateTime dateFocus;
-    private ZonedDateTime today;
+    ZonedDateTime dateFocus;
+    ZonedDateTime today;
 
-    // FXML components
-    @FXML private Text year;
-    @FXML private Text month;
-    @FXML private ListView<String> eventList;
-    @FXML private TextField classNameField;
-    @FXML private TextField classStartTimeField;
-    @FXML private TextField classEndTimeField;
-    @FXML private ListView<String> classDaysField;
-    @FXML private ListView<String> classList;
-    @FXML private VBox calendarContainer;
-    @FXML private FlowPane monthlyCalendar;
+    @FXML
+    private Text year;
 
-    // View containers
+    @FXML
+    private Text month;
+
+    @FXML
+    private ListView<String> eventList;
+
+    @FXML
+    private ComboBox<String> classDayField; // Dropdown for day of the week
+    @FXML
+    private TextField classNameField; // Text field for class name
+    @FXML
+    private TextField classStartTimeField; // Text field for start time
+    @FXML
+    private TextField classEndTimeField; // Text field for end time
+    @FXML
+    private ListView<String> classDaysField; // ListView for selecting multiple days
+    @FXML
+    private ListView<String> classList; // ListView for displaying classes
+    @FXML
+    private VBox calendarContainer;
+    @FXML
+    private FlowPane monthlyCalendar;
     private VBox dailyView;
     private VBox weeklyView;
     private ScrollPane semesterlyView;
 
-    // Observable list for events and list for calendar activities
+
     private ObservableList<String> events = FXCollections.observableArrayList();
     private List<CalendarActivity> calendarActivities = new ArrayList<>();
-
-    // Semester start and end dates
-    private LocalDate semesterStartDate = LocalDate.of(2025, 2, 3);
-    private LocalDate semesterEndDate = LocalDate.of(2025, 5, 16);
-
-    // Enum to represent the current view state
-    private enum ViewState {
-        DAILY, WEEKLY, MONTHLY, SEMESTERLY
-    }
-
-    private ViewState currentView = ViewState.MONTHLY; // Default view
+    private LocalDate semesterStartDate = LocalDate.of(2025, 2, 3); // Example: September 1, 2023
+    private LocalDate semesterEndDate = LocalDate.of(2025, 5, 16); // Example: December 15, 2023
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        // Initialize date focus and today's date
         dateFocus = ZonedDateTime.now();
         today = ZonedDateTime.now();
-
-        // Set up event list
         eventList.setItems(events);
 
         // Initialize the ListView with days of the week
         classDaysField.setItems(FXCollections.observableArrayList(
                 "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"
         ));
-        classDaysField.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        classDaysField.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE); // Allow multiple selections
 
-        // Initialize the class list
+        // Initialize the classList
         classList.setItems(FXCollections.observableArrayList());
 
-        // Load academic year deadlines and social events
-        loadAcademicYearDeadlines();
-        loadSocialEvents();
+        // Load academic year deadlines
+        try {
+            URL resourceUrl = getClass().getClassLoader().getResource("aydeadlines.csv");
+            if (resourceUrl != null) {
+                loadAcademicYearDeadlines(Paths.get(resourceUrl.toURI()).toString());
+            } else {
+                System.err.println("Could not find aydeadlines.csv in resources");
+            }
+        } catch (Exception e) {
+            System.err.println("Error loading academic year deadlines: " + e.getMessage());
+            e.printStackTrace();
+        }
 
-        // Initialize view containers
+        // Load social events into the sidebar
+        try {
+            URL socialEventsUrl = getClass().getClassLoader().getResource("socialevents.csv");
+            if (socialEventsUrl != null) {
+                loadSocialEvents(Paths.get(socialEventsUrl.toURI()).toString());
+            } else {
+                System.err.println("Could not find socialevents.csv in resources");
+            }
+        } catch (Exception e) {
+            System.err.println("Error loading social events: " + e.getMessage());
+            e.printStackTrace();
+        }
+        // Initialize all view containers
         dailyView = new VBox(10);
         weeklyView = new VBox(10);
         semesterlyView = new ScrollPane();
 
-        // Set initial view to monthly and draw the calendar
+        // Set initial view
         switchToMonthlyView(null);
+        // Draw the calendar
         drawCalendar();
     }
+    private enum ViewState {
+        DAILY, WEEKLY, MONTHLY, SEMESTERLY
+    }
 
-    // Switch to daily view
+    private ViewState currentView = ViewState.MONTHLY; // Default view
     @FXML
     void switchToDailyView(ActionEvent event) {
         currentView = ViewState.DAILY;
         drawCalendar();
     }
 
-    // Switch to weekly view
     @FXML
     void switchToWeeklyView(ActionEvent event) {
         currentView = ViewState.WEEKLY;
         drawCalendar();
     }
 
-    // Switch to monthly view
     @FXML
     void switchToMonthlyView(ActionEvent event) {
         currentView = ViewState.MONTHLY;
         drawCalendar();
     }
 
-    // Switch to semesterly view
     @FXML
     void switchToSemesterlyView(ActionEvent event) {
         currentView = ViewState.SEMESTERLY;
         drawCalendar();
     }
-
-    // Add a selected event to the calendar
     @FXML
     void addSelectedEvent(ActionEvent event) {
         String selectedEvent = eventList.getSelectionModel().getSelectedItem();
         if (selectedEvent != null) {
+            // Parse the event name and date from the selected event string
             String[] parts = selectedEvent.split(" - ");
             if (parts.length == 2) {
                 String eventName = parts[0];
                 String dateString = parts[1];
 
                 try {
+                    // Parse the date from the event string
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d-MMM-yy", Locale.ENGLISH);
                     LocalDate localDate = LocalDate.parse(dateString, formatter);
+
+                    // Convert to ZonedDateTime (using the system default time zone)
                     ZonedDateTime eventDateTime = localDate.atStartOfDay(dateFocus.getZone());
+
+                    // Add the event to the calendarActivities list
                     calendarActivities.add(new CalendarActivity(eventDateTime, eventName, 0));
-                    drawCalendar();
+                    drawCalendar(); // Refresh the calendar
                 } catch (Exception e) {
                     showAlert("Error", "Invalid date format in selected event.");
                 }
@@ -146,7 +170,6 @@ public class CalendarController implements Initializable {
         }
     }
 
-    // Show an alert dialog
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);
@@ -155,7 +178,6 @@ public class CalendarController implements Initializable {
         alert.showAndWait();
     }
 
-    // Navigate back in time based on the current view
     @FXML
     void backOneMonth(ActionEvent event) {
         switch (currentView) {
@@ -169,13 +191,12 @@ public class CalendarController implements Initializable {
                 dateFocus = dateFocus.minusMonths(1);
                 break;
             case SEMESTERLY:
-                dateFocus = dateFocus.minusMonths(1);
+                dateFocus = dateFocus.minusMonths(1); // Adjust as needed for semesterly view
                 break;
         }
         drawCalendar();
     }
 
-    // Navigate forward in time based on the current view
     @FXML
     void forwardOneMonth(ActionEvent event) {
         switch (currentView) {
@@ -189,16 +210,17 @@ public class CalendarController implements Initializable {
                 dateFocus = dateFocus.plusMonths(1);
                 break;
             case SEMESTERLY:
-                dateFocus = dateFocus.plusMonths(1);
+                dateFocus = dateFocus.plusMonths(1); // Adjust as needed for semesterly view
                 break;
         }
         drawCalendar();
     }
 
-    // Draw the calendar based on the current view
     private void drawCalendar() {
+        // Clear all views
         calendarContainer.getChildren().clear();
 
+        // Update the text at the top based on the current view
         switch (currentView) {
             case DAILY:
                 year.setText(dateFocus.format(DateTimeFormatter.ofPattern("yyyy")));
@@ -226,14 +248,209 @@ public class CalendarController implements Initializable {
         }
     }
 
-    // Draw the daily view
+    private void createCalendarActivity(List<CalendarActivity> calendarActivities,
+                                        double rectangleHeight, double rectangleWidth, StackPane stackPane) {
+        VBox calendarActivityBox = new VBox(2); // Add spacing between events
+        calendarActivityBox.setStyle("""
+        -fx-background-color: #f0f0f0;
+        -fx-padding: 2;
+        -fx-border-radius: 3;
+        -fx-background-radius: 3;
+        """);
+
+        for (int k = 0; k < calendarActivities.size(); k++) {
+            if (k >= 3) { // Show more events
+                Text moreActivities = new Text("+" + (calendarActivities.size() - k) + " more");
+                moreActivities.setStyle("-fx-fill: #666666;");
+                calendarActivityBox.getChildren().add(moreActivities);
+                break;
+            }
+            Text text = new Text(calendarActivities.get(k).getClientName());
+            // Use different styles for classes (serviceNo = 1) and events (serviceNo = 0)
+            if (calendarActivities.get(k).getServiceNo() == 1) {
+                text.setStyle("-fx-fill: #0077b6; -fx-font-weight: bold;"); // Blue for classes
+            } else {
+                text.setStyle("-fx-fill: #000000;"); // Black for events
+            }
+            text.setWrappingWidth(rectangleWidth * 0.75);
+            calendarActivityBox.getChildren().add(text);
+        }
+
+        calendarActivityBox.setTranslateY((rectangleHeight / 2) * 0.20);
+        calendarActivityBox.setMaxWidth(rectangleWidth * 0.9);
+        calendarActivityBox.setMaxHeight(rectangleHeight * 0.75);
+        stackPane.getChildren().add(calendarActivityBox);
+    }
+
+    private Map<Integer, List<CalendarActivity>> getCalendarActivitiesMonth(ZonedDateTime dateFocus) {
+        // Clear the map before repopulating
+        calendarActivityMap.clear();
+
+        // Loop over all activities and match based on the current year and month
+        for (CalendarActivity activity : calendarActivities) {
+            if (activity.getDate().getYear() == dateFocus.getYear() &&
+                    activity.getDate().getMonth() == dateFocus.getMonth()) {
+                int activityDate = activity.getDate().getDayOfMonth();
+                // Add the activity to the map, keyed by day of the month
+                calendarActivityMap.computeIfAbsent(activityDate, k -> new ArrayList<>()).add(activity);
+            }
+        }
+
+        return calendarActivityMap;
+    }
+
+    private void loadAcademicYearDeadlines(String filePath) {
+        System.out.println("Attempting to load file from: " + filePath); // Debug line
+
+        try (BufferedReader br = Files.newBufferedReader(Paths.get(filePath))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                try {
+                    // Skip empty lines
+                    if (line.trim().isEmpty()) continue;
+
+                    String[] parts = line.split(",", 2);
+                    if (parts.length < 2) {
+                        System.out.println("Skipping invalid line: " + line);
+                        continue;
+                    }
+
+                    String eventName = parts[0].trim();
+                    String dateString = parts[1].trim();
+
+                    if (dateString.isEmpty()) {
+                        System.out.println("Skipping event with no date: " + eventName);
+                        continue;
+                    }
+
+                    // Parse the date from the CSV (format: dd-MMM-yyyy)
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d-MMM-yyyy", Locale.ENGLISH);
+                    LocalDate localDate = LocalDate.parse(dateString, formatter);
+
+                    // Convert to ZonedDateTime (using the system default time zone)
+                    ZonedDateTime eventDateTime = localDate.atStartOfDay(dateFocus.getZone());
+
+                    // Add the event to the calendarActivities list
+                    calendarActivities.add(new CalendarActivity(eventDateTime, eventName, 0));
+                    System.out.println("Added event: " + eventName + " on " + eventDateTime); // Debug line
+
+                } catch (Exception e) {
+                    System.err.println("Error processing line: " + line);
+                    e.printStackTrace();
+                    // Continue processing other lines even if one fails
+                    continue;
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading file: " + filePath);
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    void addClass(ActionEvent event) {
+        String className = classNameField.getText();
+        ObservableList<String> selectedDays = classDaysField.getSelectionModel().getSelectedItems(); // Get selected days
+        String startTimeStr = classStartTimeField.getText();
+        String endTimeStr = classEndTimeField.getText();
+
+        if (className.isEmpty() || selectedDays.isEmpty() || startTimeStr.isEmpty() || endTimeStr.isEmpty()) {
+            showAlert("Error", "Please fill in all fields for the class schedule.");
+            return;
+        }
+
+        try {
+            // Parse the start and end times
+            LocalTime startTime = LocalTime.parse(startTimeStr, DateTimeFormatter.ofPattern("HH:mm"));
+            LocalTime endTime = LocalTime.parse(endTimeStr, DateTimeFormatter.ofPattern("HH:mm"));
+
+            // Loop through each week of the semester
+            for (LocalDate date = semesterStartDate; !date.isAfter(semesterEndDate); date = date.plusWeeks(1)) {
+                for (String dayOfWeek : selectedDays) {
+                    // Find the date for the selected day of the week
+                    LocalDate classDate = date.with(DayOfWeek.valueOf(dayOfWeek.toUpperCase()));
+
+                    // Skip if the class date is outside the semester
+                    if (classDate.isBefore(semesterStartDate) || classDate.isAfter(semesterEndDate)) {
+                        continue;
+                    }
+
+                    // Create a CalendarActivity for the class
+                    ZonedDateTime classDateTime = classDate.atTime(startTime).atZone(dateFocus.getZone());
+
+                    // Add the class to the calendarActivities list
+                    calendarActivities.add(new CalendarActivity(classDateTime, className, 1)); // Use a unique serviceNo for classes
+                }
+            }
+
+            // Add the class to the classList only once
+            classList.getItems().add(className + " - " + selectedDays + " " + startTimeStr + " to " + endTimeStr);
+
+            // Refresh the calendar
+            drawCalendar();
+        } catch (Exception e) {
+            showAlert("Error", "Invalid time format. Use HH:mm for start and end times.");
+        }
+    }
+
+    private void loadSocialEvents(String filePath) {
+        System.out.println("Attempting to load social events from: " + filePath); // Debug line
+
+        try (BufferedReader br = Files.newBufferedReader(Paths.get(filePath))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                try {
+                    // Skip empty lines
+                    if (line.trim().isEmpty()) continue;
+
+                    String[] parts = line.split(",", 2);
+                    if (parts.length < 2) {
+                        System.out.println("Skipping invalid line: " + line);
+                        continue;
+                    }
+
+                    String eventName = parts[0].trim();
+                    String dateString = parts[1].trim();
+
+                    if (dateString.isEmpty()) {
+                        System.out.println("Skipping event with no date: " + eventName);
+                        continue;
+                    }
+
+                    // Add the event to the eventList for display in the sidebar
+                    events.add(eventName + " - " + dateString);
+                    System.out.println("Loaded social event: " + eventName + " on " + dateString); // Debug line
+
+                } catch (Exception e) {
+                    System.err.println("Error processing line: " + line);
+                    e.printStackTrace();
+                    // Continue processing other lines even if one fails
+                    continue;
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading file: " + filePath);
+            e.printStackTrace();
+        }
+    }
+    private List<CalendarActivity> getActivitiesForDate(LocalDate date) {
+        List<CalendarActivity> activities = new ArrayList<>();
+        for (CalendarActivity activity : calendarActivities) {
+            if (activity.getDate().toLocalDate().equals(date)) {
+                activities.add(activity);
+            }
+        }
+        return activities;
+    }
     private void drawDailyView() {
         dailyView.getChildren().clear();
         dailyView.setStyle("-fx-padding: 10;");
 
+        // Create content for daily view
         VBox contentBox = new VBox(10);
         contentBox.setStyle("-fx-background-color: white; -fx-padding: 20;");
 
+        // Display events for the day
         List<CalendarActivity> dailyActivities = getActivitiesForDate(dateFocus.toLocalDate());
         for (CalendarActivity activity : dailyActivities) {
             HBox eventBox = new HBox(10);
@@ -255,7 +472,6 @@ public class CalendarController implements Initializable {
         calendarContainer.getChildren().add(dailyView);
     }
 
-    // Draw the weekly view
     private void drawWeeklyView() {
         weeklyView.getChildren().clear();
         weeklyView.setStyle("-fx-padding: 10; -fx-background-color: white;");
@@ -282,11 +498,14 @@ public class CalendarController implements Initializable {
             List<CalendarActivity> activities = getActivitiesForDate(currentDate);
             for (CalendarActivity activity : activities) {
                 int hour = activity.getDate().getHour();
-                if (hour == 0) hour = 8; // Default to 8:00 AM if no time is set
+                if (hour == 0) {
+                    hour = 8; // Default events with no set time to appear at 8:00 AM
+                }
                 if (hour >= 8 && hour <= 21) {
                     VBox eventBox = new VBox(5);
                     eventBox.setStyle("-fx-padding: 5; -fx-border-color: #e0e0e0; -fx-background-color: " +
-                            (activity.getServiceNo() == 1 ? "#e3f2fd" : "#fff3e0") + "; -fx-border-radius: 5;");
+                            (activity.getServiceNo() == 1 ? "#e3f2fd" : "#fff3e0") +
+                            "; -fx-border-radius: 5;");
 
                     Text timeText = new Text(activity.getDate().format(DateTimeFormatter.ofPattern("HH:mm")));
                     Text eventText = new Text(activity.getClientName());
@@ -306,19 +525,19 @@ public class CalendarController implements Initializable {
         calendarContainer.getChildren().add(weeklyView);
     }
 
-    // Draw the monthly view
     private void drawMonthlyView() {
-        monthlyCalendar.getChildren().clear();
+        monthlyCalendar.getChildren().clear(); // Clear previous content
 
         LocalDate firstDayOfMonth = dateFocus.toLocalDate().withDayOfMonth(1);
         int daysInMonth = firstDayOfMonth.lengthOfMonth();
-        int startDayOfWeek = firstDayOfMonth.getDayOfWeek().getValue() % 7;
+        int startDayOfWeek = firstDayOfMonth.getDayOfWeek().getValue() % 7; // Adjusting for Sunday-based week
 
         GridPane monthGrid = new GridPane();
         monthGrid.setHgap(10);
         monthGrid.setVgap(10);
         monthGrid.setStyle("-fx-background-color: white; -fx-padding: 10;");
 
+        // Create headers for days of the week
         String[] weekDays = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
         for (int i = 0; i < 7; i++) {
             Text dayHeader = new Text(weekDays[i]);
@@ -341,12 +560,13 @@ public class CalendarController implements Initializable {
             VBox dayBox = new VBox(5);
             dayBox.getChildren().add(dayNumber);
 
+            // Add events for this day
             List<CalendarActivity> activities = getActivitiesForDate(currentDate);
             for (CalendarActivity activity : activities) {
                 Text eventText = new Text(activity.getClientName());
                 eventText.setStyle(activity.getServiceNo() == 1 ? "-fx-fill: blue;" : "-fx-fill: black;");
-                eventText.setWrappingWidth(100);
-                if (dayBox.getChildren().size() < 4) {
+                eventText.setWrappingWidth(100); // Ensure text wraps inside the box
+                if (dayBox.getChildren().size() < 4) { // Show only first few events
                     dayBox.getChildren().add(eventText);
                 }
             }
@@ -365,11 +585,13 @@ public class CalendarController implements Initializable {
         calendarContainer.getChildren().add(monthlyCalendar);
     }
 
-    // Draw the semesterly view
+
     private void drawSemesterlyView() {
+        // Clear and set up semester view
         VBox semesterContent = new VBox(20);
         semesterContent.setStyle("-fx-padding: 20; -fx-background-color: white;");
 
+        // Add semester header
         Text header = new Text("Semester Calendar: " +
                 semesterStartDate.format(DateTimeFormatter.ofPattern("MMM d, yyyy")) +
                 " - " +
@@ -377,15 +599,18 @@ public class CalendarController implements Initializable {
         header.setStyle("-fx-font-size: 18; -fx-font-weight: bold;");
         semesterContent.getChildren().add(header);
 
+        // Create month containers
         LocalDate currentDate = semesterStartDate;
         while (!currentDate.isAfter(semesterEndDate)) {
             VBox monthBox = new VBox(10);
             monthBox.setStyle("-fx-padding: 10; -fx-border-color: #e0e0e0; -fx-border-radius: 5;");
 
+            // Add month header
             Text monthHeader = new Text(currentDate.format(DateTimeFormatter.ofPattern("MMMM yyyy")));
             monthHeader.setStyle("-fx-font-size: 16; -fx-font-weight: bold;");
             monthBox.getChildren().add(monthHeader);
 
+            // Add events for the month
             LocalDate monthEnd = currentDate.plusMonths(1);
             while (!currentDate.isAfter(monthEnd.minusDays(1)) && !currentDate.isAfter(semesterEndDate)) {
                 List<CalendarActivity> activities = getActivitiesForDate(currentDate);
@@ -400,7 +625,8 @@ public class CalendarController implements Initializable {
                     for (CalendarActivity activity : activities) {
                         HBox eventBox = new HBox(10);
                         eventBox.setStyle("-fx-padding: 5; -fx-background-color: " +
-                                (activity.getServiceNo() == 1 ? "#e3f2fd" : "#fff3e0") + "; -fx-border-radius: 3;");
+                                (activity.getServiceNo() == 1 ? "#e3f2fd" : "#fff3e0") +
+                                "; -fx-border-radius: 3;");
 
                         Text timeText = new Text(activity.getDate().format(DateTimeFormatter.ofPattern("HH:mm")));
                         Text eventText = new Text(activity.getClientName());
@@ -419,111 +645,5 @@ public class CalendarController implements Initializable {
         semesterlyView.setContent(semesterContent);
         semesterlyView.setFitToWidth(true);
         calendarContainer.getChildren().add(semesterlyView);
-    }
-
-    // Get activities for a specific date
-    private List<CalendarActivity> getActivitiesForDate(LocalDate date) {
-        List<CalendarActivity> activities = new ArrayList<>();
-        for (CalendarActivity activity : calendarActivities) {
-            if (activity.getDate().toLocalDate().equals(date)) {
-                activities.add(activity);
-            }
-        }
-        return activities;
-    }
-
-    // Load academic year deadlines from a CSV file
-    private void loadAcademicYearDeadlines() {
-        try {
-            URL resourceUrl = getClass().getClassLoader().getResource("aydeadlines.csv");
-            if (resourceUrl != null) {
-                loadEventsFromFile(Paths.get(resourceUrl.toURI()).toString(), 0);
-            } else {
-                System.err.println("Could not find aydeadlines.csv in resources");
-            }
-        } catch (Exception e) {
-            System.err.println("Error loading academic year deadlines: " + e.getMessage());
-        }
-    }
-
-    // Load social events from a CSV file
-    private void loadSocialEvents() {
-        try {
-            URL socialEventsUrl = getClass().getClassLoader().getResource("socialevents.csv");
-            if (socialEventsUrl != null) {
-                loadEventsFromFile(Paths.get(socialEventsUrl.toURI()).toString(), 1);
-            } else {
-                System.err.println("Could not find socialevents.csv in resources");
-            }
-        } catch (Exception e) {
-            System.err.println("Error loading social events: " + e.getMessage());
-        }
-    }
-
-    // Load events from a CSV file
-    private void loadEventsFromFile(String filePath, int serviceNo) {
-        try (BufferedReader br = Files.newBufferedReader(Paths.get(filePath))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                if (line.trim().isEmpty()) continue;
-
-                String[] parts = line.split(",", 2);
-                if (parts.length < 2) {
-                    System.out.println("Skipping invalid line: " + line);
-                    continue;
-                }
-
-                String eventName = parts[0].trim();
-                String dateString = parts[1].trim();
-
-                if (dateString.isEmpty()) {
-                    System.out.println("Skipping event with no date: " + eventName);
-                    continue;
-                }
-
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d-MMM-yyyy", Locale.ENGLISH);
-                LocalDate localDate = LocalDate.parse(dateString, formatter);
-                ZonedDateTime eventDateTime = localDate.atStartOfDay(dateFocus.getZone());
-                calendarActivities.add(new CalendarActivity(eventDateTime, eventName, serviceNo));
-            }
-        } catch (IOException e) {
-            System.err.println("Error reading file: " + filePath);
-        }
-    }
-
-    // Add a class to the calendar
-    @FXML
-    void addClass(ActionEvent event) {
-        String className = classNameField.getText();
-        ObservableList<String> selectedDays = classDaysField.getSelectionModel().getSelectedItems();
-        String startTimeStr = classStartTimeField.getText();
-        String endTimeStr = classEndTimeField.getText();
-
-        if (className.isEmpty() || selectedDays.isEmpty() || startTimeStr.isEmpty() || endTimeStr.isEmpty()) {
-            showAlert("Error", "Please fill in all fields for the class schedule.");
-            return;
-        }
-
-        try {
-            LocalTime startTime = LocalTime.parse(startTimeStr, DateTimeFormatter.ofPattern("HH:mm"));
-            LocalTime endTime = LocalTime.parse(endTimeStr, DateTimeFormatter.ofPattern("HH:mm"));
-
-            for (LocalDate date = semesterStartDate; !date.isAfter(semesterEndDate); date = date.plusWeeks(1)) {
-                for (String dayOfWeek : selectedDays) {
-                    LocalDate classDate = date.with(DayOfWeek.valueOf(dayOfWeek.toUpperCase()));
-                    if (classDate.isBefore(semesterStartDate) || classDate.isAfter(semesterEndDate)) {
-                        continue;
-                    }
-
-                    ZonedDateTime classDateTime = classDate.atTime(startTime).atZone(dateFocus.getZone());
-                    calendarActivities.add(new CalendarActivity(classDateTime, className, 1));
-                }
-            }
-
-            classList.getItems().add(className + " - " + selectedDays + " " + startTimeStr + " to " + endTimeStr);
-            drawCalendar();
-        } catch (Exception e) {
-            showAlert("Error", "Invalid time format. Use HH:mm for start and end times.");
-        }
     }
 }
