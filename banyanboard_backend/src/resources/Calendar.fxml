@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.collections.FXCollections?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="banyanboard_backend.CalendarController"
+            prefHeight="800.0" prefWidth="1200.0">
+
+    <padding>
+        <Insets top="10" right="10" bottom="10" left="10"/>
+    </padding>
+
+    <top>
+        <VBox spacing="10">
+            <!-- Calendar Navigation and View Controls -->
+            <HBox spacing="10" alignment="CENTER">
+                <Button text="Previous" onAction="#backOneMonth"/>
+                <VBox alignment="CENTER">
+                    <Text fx:id="year" style="-fx-font-size: 24;"/>
+                    <Text fx:id="month" style="-fx-font-size: 20;"/>
+                </VBox>
+                <Button text="Next" onAction="#forwardOneMonth"/>
+
+                <!-- View Switching Buttons -->
+                <Separator orientation="VERTICAL"/>
+                <Button text="Daily" onAction="#switchToDailyView"/>
+                <Button text="Weekly" onAction="#switchToWeeklyView"/>
+                <Button text="Monthly" onAction="#switchToMonthlyView"/>
+                <Button text="Semester" onAction="#switchToSemesterlyView"/>
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <VBox fx:id="calendarContainer" spacing="10">
+            <!-- Main Calendar Container -->
+            <FlowPane fx:id="monthlyCalendar"
+                      hgap="10"
+                      vgap="10"
+                      prefWrapLength="1000"
+                      style="-fx-background-color: white;"
+                      prefHeight="600.0"/>
+        </VBox>
+    </center>
+
+    <right>
+        <VBox spacing="10" prefWidth="300">
+            <!-- Event Management Section -->
+            <Label text="Add Class Schedule" style="-fx-font-size: 14; -fx-font-weight: bold;"/>
+            <TextField fx:id="classNameField" promptText="Class Name"/>
+            <ListView fx:id="classDaysField" prefHeight="100"/>
+            <HBox spacing="10">
+                <TextField fx:id="classStartTimeField" promptText="Start Time (HH:mm)" prefWidth="140"/>
+                <TextField fx:id="classEndTimeField" promptText="End Time (HH:mm)" prefWidth="140"/>
+            </HBox>
+            <Button text="Add Class" onAction="#addClass"/>
+
+            <Separator/>
+
+            <!-- Social Events Section -->
+            <Label text="Social Events" style="-fx-font-size: 14; -fx-font-weight: bold;"/>
+            <ListView fx:id="eventList" prefHeight="200"/>
+            <Button text="Add Selected Event" onAction="#addSelectedEvent"/>
+
+            <Separator/>
+
+            <!-- Class List Section -->
+            <Label text="Added Classes" style="-fx-font-size: 14; -fx-font-weight: bold;"/>
+            <ListView fx:id="classList" prefHeight="200"/>
+        </VBox>
+    </right>
+
+    <stylesheets>
+        <String fx:value="styles.css"/>
+    </stylesheets>
+</BorderPane>

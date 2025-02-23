@@ -1,0 +1,28 @@
+.button {
+    -fx-padding: 8 15;
+    -fx-background-radius: 4;
+}
+
+.text-field {
+    -fx-padding: 8;
+    -fx-background-radius: 4;
+}
+
+.list-view {
+    -fx-background-radius: 4;
+}
+
+.separator {
+    -fx-padding: 10 0;
+}
+
+#calendarContainer {
+    -fx-background-color: white;
+    -fx-background-radius: 4;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);
+}
+
+#monthlyCalendar {
+    -fx-background-color: white;
+    -fx-padding: 10;
+}
