@@ -1,3 +1,4 @@
+<!-- Author: Ivy -->
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -5,20 +6,21 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="stylesheet" href="./todo.css" />
         <script src="./scripts.js" defer></script>
+        <script src="./todo.js" defer></script>
         <title>Todo</title>
-        <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script> <!--This is the script for confetti-->
         <script>
             document.addEventListener("DOMContentLoaded", function () {
                 const menuToggle = document.querySelector(".menu-toggle");
                 const navbar = document.querySelector(".navbar");
         
                 menuToggle.addEventListener("click", function () {
-                    navbar.classList.toggle("active"); // Toggle visibility
+                    navbar.classList.toggle("active");
                 });
             });
-        </script>
+        </script> <!--This is the script for the hamburger menu navigation-->
     </head>
-    <body>
+    <body> <!--This is the script for the navigation bar with links-->
         <div class="menu-toggle">&#9776;</div>
             <div class="banner">
             <div class="navbar">
@@ -26,12 +28,14 @@
                 <ul>
                     <li><a href="index.html">Home</a></li>
                     <li><a href="schedules.html">Campus Schedules</a></li>
-                    <li><a href="#">My Class Schedule</a></li>
+                    <li><a href="calendar.html">My Class Schedule</a></li>
                     <li><a href="todo.html">To Do List</a></li>
                     <li><a href="tracker.html">Time Tracker</a></li>
+                    <li><a id="magic-wand-icon"><img src="magicwand.png" alt="Magic Wand" style="width:30px; cursor:pointer;"></a></li> <!--id for magic wand icon-->
                 </ul>
             </div>
         </div>
+        <!--Creates the format for the to do list with input, buttons, scroll bar, and a count of total items-->
         <section class="todo">
         <h2>To-do list</h2>
         <div class="input">

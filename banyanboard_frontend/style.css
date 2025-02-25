@@ -1,3 +1,4 @@
+/* Author: Manuel */
 html {
     scroll-behavior: smooth;
 }
@@ -544,6 +545,50 @@ td {
 .scroll-top img:hover {
     opacity: 0.7;
     transform: scale(1.1); /* Slight zoom effect */
+}
+
+/* Pop-up styles */
+.popup {
+    display: none; /* Hidden by default */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    border: 2px solid var(--blue);
+    padding: 20px;
+    max-width: 80%;
+    max-height: 80%;
+    z-index: 200;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+/* For image/meme pop-ups */
+.popup img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* For text pop-ups */
+.popup p {
+    height: 80%;
+    width: 100%;
+    font-size: 1.2rem;
+    color: black;
+    margin: 20px 0;
+  }
+
+/* For closing any pop-up "X" button */
+.popup-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 1.5rem;
+    background: none;
+    border: none;
+    color: #333;
+    cursor: pointer;
 }
 
 /* Tablet View (Medium-Sized Screens) */
