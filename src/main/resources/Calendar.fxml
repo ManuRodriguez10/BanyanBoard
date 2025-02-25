@@ -38,7 +38,7 @@
 
     <center>
         <VBox fx:id="calendarContainer" spacing="10">
-            <!-- Main Calendar Container -->
+            <!-- banyanboard_backend.Main Calendar Container -->
             <FlowPane fx:id="monthlyCalendar"
                       hgap="10"
                       vgap="10"

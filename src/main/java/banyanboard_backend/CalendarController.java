@@ -11,9 +11,9 @@ import javafx.scene.text.Text;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -59,8 +59,8 @@ public class CalendarController implements Initializable {
 
     private ObservableList<String> events = FXCollections.observableArrayList();
     private List<CalendarActivity> calendarActivities = new ArrayList<>();
-    private LocalDate semesterStartDate = LocalDate.of(2025, 2, 3); // Example: September 1, 2023
-    private LocalDate semesterEndDate = LocalDate.of(2025, 5, 16); // Example: December 15, 2023
+    private LocalDate semesterStartDate = LocalDate.of(2025, 2, 3);
+    private LocalDate semesterEndDate = LocalDate.of(2025, 5, 16);
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -79,12 +79,7 @@ public class CalendarController implements Initializable {
 
         // Load academic year deadlines
         try {
-            URL resourceUrl = getClass().getClassLoader().getResource("aydeadlines.csv");
-            if (resourceUrl != null) {
-                loadAcademicYearDeadlines(Paths.get(resourceUrl.toURI()).toString());
-            } else {
-                System.err.println("Could not find aydeadlines.csv in resources");
-            }
+            loadAcademicYearDeadlines("aydeadlines.csv");
         } catch (Exception e) {
             System.err.println("Error loading academic year deadlines: " + e.getMessage());
             e.printStackTrace();
@@ -92,16 +87,12 @@ public class CalendarController implements Initializable {
 
         // Load social events into the sidebar
         try {
-            URL socialEventsUrl = getClass().getClassLoader().getResource("socialevents.csv");
-            if (socialEventsUrl != null) {
-                loadSocialEvents(Paths.get(socialEventsUrl.toURI()).toString());
-            } else {
-                System.err.println("Could not find socialevents.csv in resources");
-            }
+            loadSocialEvents("socialevents.csv");
         } catch (Exception e) {
             System.err.println("Error loading social events: " + e.getMessage());
             e.printStackTrace();
         }
+
         // Initialize all view containers
         dailyView = new VBox(10);
         weeklyView = new VBox(10);
@@ -299,10 +290,12 @@ public class CalendarController implements Initializable {
         return calendarActivityMap;
     }
 
-    private void loadAcademicYearDeadlines(String filePath) {
-        System.out.println("Attempting to load file from: " + filePath); // Debug line
+    private void loadAcademicYearDeadlines(String resourceName) {
+        System.out.println("Attempting to load academic year deadlines: " + resourceName);
 
-        try (BufferedReader br = Files.newBufferedReader(Paths.get(filePath))) {
+        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(resourceName);
+             BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
+
             String line;
             while ((line = br.readLine()) != null) {
                 try {
@@ -332,17 +325,17 @@ public class CalendarController implements Initializable {
 
                     // Add the event to the calendarActivities list
                     calendarActivities.add(new CalendarActivity(eventDateTime, eventName, 0));
-                    System.out.println("Added event: " + eventName + " on " + eventDateTime); // Debug line
 
                 } catch (Exception e) {
                     System.err.println("Error processing line: " + line);
                     e.printStackTrace();
-                    // Continue processing other lines even if one fails
-                    continue;
                 }
             }
         } catch (IOException e) {
-            System.err.println("Error reading file: " + filePath);
+            System.err.println("Error reading resource: " + resourceName);
+            e.printStackTrace();
+        } catch (NullPointerException e) {
+            System.err.println("Resource not found: " + resourceName);
             e.printStackTrace();
         }
     }
@@ -393,10 +386,12 @@ public class CalendarController implements Initializable {
         }
     }
 
-    private void loadSocialEvents(String filePath) {
-        System.out.println("Attempting to load social events from: " + filePath); // Debug line
+    private void loadSocialEvents(String resourceName) {
+        System.out.println("Attempting to load social events: " + resourceName);
 
-        try (BufferedReader br = Files.newBufferedReader(Paths.get(filePath))) {
+        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(resourceName);
+             BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
+
             String line;
             while ((line = br.readLine()) != null) {
                 try {
@@ -419,7 +414,6 @@ public class CalendarController implements Initializable {
 
                     // Add the event to the eventList for display in the sidebar
                     events.add(eventName + " - " + dateString);
-                    System.out.println("Loaded social event: " + eventName + " on " + dateString); // Debug line
 
                 } catch (Exception e) {
                     System.err.println("Error processing line: " + line);
@@ -429,7 +423,10 @@ public class CalendarController implements Initializable {
                 }
             }
         } catch (IOException e) {
-            System.err.println("Error reading file: " + filePath);
+            System.err.println("Error reading resource: " + resourceName);
+            e.printStackTrace();
+        } catch (NullPointerException e) {
+            System.err.println("Resource not found: " + resourceName);
             e.printStackTrace();
         }
     }

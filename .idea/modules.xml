@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/BanyanBoard.iml" filepath="$PROJECT_DIR$/.idea/BanyanBoard.iml" />
       <module fileurl="file://$PROJECT_DIR$/banyanboard_backend/banyanboard_backend.iml" filepath="$PROJECT_DIR$/banyanboard_backend/banyanboard_backend.iml" />
     </modules>
   </component>
