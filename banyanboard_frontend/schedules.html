@@ -1,0 +1,145 @@
+<!-- Author: Manuel -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Schedule - Banyan Board</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<script src="./scripts.js"></script>
+<!-- Scroll to Top Button -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const scrollTopButton = document.querySelector(".scroll-top");
+
+        // Show/hide button when scrolling (for better UX)
+        window.addEventListener("scroll", function () {
+            if (window.scrollY > 300) {
+                scrollTopButton.style.display = "flex"; // Show button
+            } else {
+                scrollTopButton.style.display = "none"; // Hide button
+            }
+        });
+
+        // Scroll smoothly to top when clicked
+        scrollTopButton.addEventListener("click", function (event) {
+            event.preventDefault();
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+    });
+</script>
+
+<body class="schedule-page">
+
+    <!-- Navbar -->
+    <div class="banner">
+        <div class="navbar">
+            <img src="banyanlogo.jpg" class="logo">
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                    <li><a href="schedules.html">Campus Schedules</a></li>
+                    <li><a href="calendar.html">My Class Schedule</a></li>
+                    <li><a href="todo.html">To Do List</a></li>
+                    <li><a href="tracker.html">Time Tracker</a></li>
+                    <li><a id="magic-wand-icon"><img src="magicwand.png" alt="Magic Wand" style="width:30px; cursor:pointer;"></a></li>
+            </ul>
+        </div>
+
+        <!-- Header Section -->
+        <div class="content">
+            <img src="scheduleslogo.png" alt="Schedules Icon" class="schedule-main-icon">
+            <h1>Campus Schedules</h1>
+            <p>Stay updated with the latest available hours for essential campus services.</p>
+            <div class="buttons">
+                <button class="button"><a href="#ham" class="scroll-link">HAM Schedule</a></button>
+                <button class="button"><a href="#wrc" class="scroll-link">WRC Schedule</a></button>
+                <button class="button"><a href="#qrc" class="scroll-link">QRC Schedule</a></button>
+                <button class="button"><a href="#ceo" class="scroll-link">CEO Schedule</a></button>
+            </div>
+        </div>
+    </div>
+
+    
+
+    <!-- HAM Section -->
+    <section id="ham" class="schedule-section">
+        <img src="hamlogo.png" alt="HAM Icon" class="schedule-icon">
+        <h2>HAM Schedule</h2>
+        <table>
+            <tr>
+                <th>Day</th>
+                <th>Opening Hours</th>
+            </tr>
+            <tr>
+                <td>Monday - Friday</td>
+                <td>Breakfast: 8:00am – 10:00am <br> Lunch: 11:00am – 2:00pm <br> Dinner: 5:00pm – 7:30pm</td>
+            </tr>
+        </table>
+        <p>The idea of living well is infused through the New College of Florida dining experience. <br> you step into our dining locations, you will see it in our locally sourced ingredients, our fresh and flavorful menus, <br>our emphasis on scratch prepared foods, and our friendly and personal service.
+        </p>
+    </section>
+
+    <!-- WRC Section -->
+    <section id="wrc" class="schedule-section">
+        <img src="wrclogo.png" alt="WRC Icon" class="schedule-icon">
+        <h2>WRC Schedule</h2>
+        <table>
+            <tr>
+                <th>Day</th>
+                <th>Opening Hours</th>
+            </tr>
+            <tr>
+                <td>Monday - Thursday</td>
+                <td>10 AM - 6 PM</td>
+            </tr>
+        </table>
+        <p>The Writing Resource Center (WRC) serves the students, staff, and faculty of New College of Florida, <br> offering direct support for any type of writing at any stage in the writing process.
+        </p>
+    </section>
+
+    <!-- QRC Section -->
+    <section id="qrc" class="schedule-section">
+        <img src="qrclogo.png" alt="QRC Icon" class="schedule-icon">
+        <h2>QRC Schedule</h2>
+        <table>
+            <tr>
+                <th>Day</th>
+                <th>Opening Hours</th>
+            </tr>
+            <tr>
+                <td>Tuesday & Thursday</td>
+                <td>12 PM - 5 PM</td>
+            </tr>
+        </table>
+        <p>The Quantitative Resource Center (QRC) provided tutoring in Biology, Chemistry, Physics, Math, Statistics, Computer Science, and Economics. <br> The QRC has been superseded by the Academic Resource Center (ARC) which provides tutoring in all subjects taught at New College. </p>
+    </section>
+
+    <!-- CEO Section -->
+    <section id="ceo" class="schedule-section">
+        <img src="ceologo.png" alt="CEO Icon" class="schedule-icon">
+        <h2>CEO Schedule</h2>
+        <table>
+            <tr>
+                <th>Day</th>
+                <th>Opening Hours</th>
+            </tr>
+            <tr>
+                <td>Monday - Friday</td>
+                <td>9 AM - 6 PM</td>
+            </tr>
+        </table>
+        <p>The Center for Career Engagement and Opportunity (CEO) at New College of Florida empowers every <br> unique student to achieve post-graduation success and connect to a world of possibilities.
+        </p>
+    </section><script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const menuToggle = document.querySelector(".menu-toggle");
+            const navbar = document.querySelector(".navbar");
+    
+            menuToggle.addEventListener("click", function () {
+                navbar.classList.toggle("active"); // Toggle visibility
+            });
+        });
+    </script>
+</body>
+</html>

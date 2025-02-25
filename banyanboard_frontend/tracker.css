@@ -1,0 +1,286 @@
+/* Author: Ivy */
+:root {
+    --dark: #001747;
+    --grey: #b1bacb;
+    --grey-border: rgba(210, 210, 210, 0.75);
+    --grey-light: #eeeeee;
+    --grey-dark: $405175;
+    --blue: #0f2553;
+    --white: #ffffff;
+    --yellow: #ffd700;
+  }
+
+* {
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+    box-sizing: border-box;
+}
+
+html, body {
+    overflow-x: hidden;
+    width: 100vw;
+    height: 100vh;
+    scroll-behavior: smooth;
+}
+
+body {
+    background: linear-gradient(to bottom, black, var(--blue));
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    overflow-x: hidden;
+}
+
+  /* Navbar */
+.navbar {
+    width: 85%;
+    margin: auto;
+    padding: 35px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+} 
+.logo {
+    width: 120px;
+    cursor: pointer;
+}
+.navbar ul {
+    display: flex;
+}
+.navbar ul li {
+    list-style: none;
+    margin: 0 20px;
+    position: relative;
+}
+.navbar ul li a {
+    text-decoration: none;
+    color: white;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+.navbar ul li::after {
+    content: "";
+    height: 3px;
+    width: 0%;
+    background: var(--yellow);
+    position: absolute;
+    left: 0;
+    bottom: -5px;
+    transition: width 0.3s;
+}
+.navbar ul li:hover::after {
+    width: 100%;
+}
+
+/* Tracker */
+.tracker {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 3rem;
+    color: white;
+    margin-top: 80px;
+}
+
+/* Category Input */
+.category-container {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+#categoryName {
+    padding: 0.5rem;
+    font-size: 1rem;
+    border-radius: 0.5rem;
+}
+#addCategoryButton {
+    padding: 0.7rem 1.5rem;
+    font-size: 1rem;
+    background-color: var(--yellow);
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+}
+
+/* Category Selection and Manual Time Entry */
+.category-selection-container {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+#categorySelect, #hours, #minutes {
+    padding: 0.5rem;
+    font-size: 1rem;
+    border-radius: 0.5rem;
+}
+#manualAddButton {
+    padding: 0.7rem 1.5rem;
+    font-size: 1rem;
+    background-color: var(--yellow);
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+}
+
+/* Scrollable Categories Box */
+.categories-box {
+    width: 60%;
+    max-height: 130px;
+    overflow-y: auto;
+    border: 1px solid var(--grey-border);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    background-color: var(--white);
+    color: black;
+}
+
+/* Delete Button for Categories & Entries*/
+.delete-btn {
+    background-color: transparent;
+    border: none;
+    color: red;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-left: 10px;
+    transition: color 0.3s;
+}
+
+.delete-btn:hover {
+    color: darkred;
+  }
+
+/* Timer */
+#timerContent {
+    padding: 10px;
+    background-color: #f4f4f4;
+    border: 1px solid #ccc;
+    margin-top: 20px;
+    border-radius: 8px;
+    width: 100%;
+    text-align: center;
+}
+
+/* Timer Buttons */
+#startTimerButton, #stopTimerButton {
+    padding: 10px 20px;
+    font-size: 1rem;
+    margin-top: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#startTimerButton {
+    background-color: var(--yellow);
+}
+
+#stopTimerButton {
+    background-color: var(--grey);
+    color: #333;
+    cursor: not-allowed;
+}
+
+#stopTimerButton:enabled {
+    background-color: #f44336;
+    color: white;
+}
+
+/* Add space between timer and entries */
+#timerContent {
+    margin-top: 50px;
+    margin-bottom: auto;
+}
+
+/* Timer Text */
+#timerDisplay {
+    color: black; 
+    font-size: 2rem; 
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+/* Pop-up styles */
+.popup {
+    display: none; /* Hidden by default */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    border: 2px solid var(--blue);
+    padding: 20px;
+    max-width: 80%;
+    max-height: 80%;
+    z-index: 200;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+.popup img {
+    max-width: 100%;
+    height: auto;
+}
+
+.popup-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 1.5rem;
+    background: none;
+    border: none;
+    color: #333;
+    cursor: pointer;
+}
+
+
+/* Phone Accesssible */
+/* Very Small Mobile Screens (Phones under 480px width) */
+/* MOBILE-FRIENDLY NAVBAR */
+@media (max-width: 768px) {
+    .menu-toggle {
+        display: block; /* Show hamburger menu for small screens */
+        font-size: 30px;
+        color: white;
+        cursor: pointer;
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        z-index: 101;
+    }
+  }
+  
+  /* Hide nav links by default on mobile */
+  @media (max-width: 768px) {
+    .navbar ul {
+      display: none;
+      flex-direction: column;
+      background: rgba(0, 0, 0, 0.9);
+      width: 100%;
+      position: absolute;
+      top: 70px;
+      left: 0;
+      text-align: center;
+      padding: 10px 0;
+    }
+    .navbar ul li {
+      margin: 10px 0;
+    }
+    .menu-toggle {
+      display: block; /* Show hamburger menu */
+    }
+    .navbar.active ul {
+      display: flex; /* Show nav links when active */
+    }
+  }
